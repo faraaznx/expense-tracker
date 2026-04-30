@@ -1,0 +1,34 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+.venv/
+venv/
+dist/
+*.egg-info/
+
+# Node
+node_modules/
+dist/
+.next/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Brainstorming session files
+.superpowers/
+
+# Claude Code project settings
+.claude/
+
+# Alembic
+backend/alembic/versions/*.pyc
