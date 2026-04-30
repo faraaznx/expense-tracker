@@ -1,6 +1,7 @@
 import enum
 import uuid
 from datetime import date, datetime, timezone
+from decimal import Decimal
 
 from sqlalchemy import Date, DateTime, Enum, ForeignKey, Numeric, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -22,7 +23,7 @@ class Receipt(Base):
     user_id: Mapped[uuid.UUID] = mapped_column(Uuid, nullable=False, index=True)
     store_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("stores.id"), nullable=False)
     date: Mapped[date] = mapped_column(Date, nullable=False)
-    total_aed: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
+    total_aed: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     source: Mapped[ReceiptSource] = mapped_column(
         Enum(ReceiptSource, name="receipt_source"), nullable=False
     )

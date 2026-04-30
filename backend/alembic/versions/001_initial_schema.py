@@ -37,7 +37,7 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.Column("logo_url", sa.String(500), nullable=True),
-        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
+        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("NOW()")),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("name"),
     )
@@ -59,7 +59,7 @@ def upgrade() -> None:
             ),
             nullable=False,
         ),
-        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
+        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("NOW()")),
         sa.ForeignKeyConstraint(["store_id"], ["stores.id"]),
         sa.PrimaryKeyConstraint("id"),
     )
@@ -72,7 +72,7 @@ def upgrade() -> None:
         sa.Column("receipt_id", sa.Uuid(), nullable=False),
         sa.Column("storage_path", sa.String(500), nullable=False),
         sa.Column("display_order", sa.Integer(), nullable=False),
-        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
+        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("NOW()")),
         sa.ForeignKeyConstraint(["receipt_id"], ["receipts.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )
@@ -87,7 +87,7 @@ def upgrade() -> None:
         sa.Column("quantity", sa.Numeric(8, 3), nullable=False),
         sa.Column("unit_price_aed", sa.Numeric(10, 2), nullable=False),
         sa.Column("category", sa.String(100), nullable=False),
-        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
+        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("NOW()")),
         sa.ForeignKeyConstraint(["receipt_id"], ["receipts.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )

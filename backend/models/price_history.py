@@ -1,5 +1,6 @@
 import uuid
 from datetime import date
+from decimal import Decimal
 
 from sqlalchemy import Date, ForeignKey, Numeric, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -17,10 +18,11 @@ class PriceHistory(Base):
     store_id: Mapped[uuid.UUID] = mapped_column(
         Uuid, ForeignKey("stores.id"), nullable=False
     )
-    price_aed: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
+    price_aed: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     date: Mapped[date] = mapped_column(Date, nullable=False)
     receipt_id: Mapped[uuid.UUID] = mapped_column(
         Uuid, ForeignKey("receipts.id", ondelete="CASCADE"), nullable=False
     )
 
+    receipt = relationship("Receipt")
     store = relationship("Store", back_populates="price_history")
