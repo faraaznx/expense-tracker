@@ -32,3 +32,6 @@ dist/
 
 # Alembic
 backend/alembic/versions/*.pyc
+
+# Git worktrees
+.worktrees/
