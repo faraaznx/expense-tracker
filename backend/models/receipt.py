@@ -31,6 +31,6 @@ class Receipt(Base):
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
 
-    store = relationship("Store", back_populates="receipts")
-    line_items = relationship("LineItem", back_populates="receipt", cascade="all, delete-orphan")
-    images = relationship("ReceiptImage", back_populates="receipt", cascade="all, delete-orphan")
+    store: Mapped["Store"] = relationship("Store", back_populates="receipts")
+    line_items: Mapped[list["LineItem"]] = relationship("LineItem", back_populates="receipt", cascade="all, delete-orphan")
+    images: Mapped[list["ReceiptImage"]] = relationship("ReceiptImage", back_populates="receipt", cascade="all, delete-orphan")

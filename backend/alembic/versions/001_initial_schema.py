@@ -76,6 +76,7 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(["receipt_id"], ["receipts.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )
+    op.create_index("ix_receipt_images_receipt_id", "receipt_images", ["receipt_id"])
 
     # line_items
     op.create_table(
@@ -114,6 +115,7 @@ def upgrade() -> None:
 def downgrade() -> None:
     op.drop_table("price_history")
     op.drop_table("line_items")
+    op.drop_index("ix_receipt_images_receipt_id", table_name="receipt_images")
     op.drop_table("receipt_images")
     op.drop_table("receipts")
     op.drop_table("stores")

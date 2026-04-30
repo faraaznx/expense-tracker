@@ -25,4 +25,4 @@ class LineItem(Base):
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
 
-    receipt = relationship("Receipt", back_populates="line_items")
+    receipt: Mapped["Receipt"] = relationship("Receipt", back_populates="line_items")

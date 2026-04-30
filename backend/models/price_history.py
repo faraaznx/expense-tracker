@@ -24,5 +24,5 @@ class PriceHistory(Base):
         Uuid, ForeignKey("receipts.id", ondelete="CASCADE"), nullable=False
     )
 
-    receipt = relationship("Receipt")
-    store = relationship("Store", back_populates="price_history")
+    receipt: Mapped["Receipt"] = relationship("Receipt", viewonly=True)
+    store: Mapped["Store"] = relationship("Store", back_populates="price_history")

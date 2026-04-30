@@ -25,5 +25,5 @@ class Store(Base):
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
 
-    receipts = relationship("Receipt", back_populates="store")
-    price_history = relationship("PriceHistory", back_populates="store")
+    receipts: Mapped[list["Receipt"]] = relationship("Receipt", back_populates="store")
+    price_history: Mapped[list["PriceHistory"]] = relationship("PriceHistory", back_populates="store")

@@ -21,4 +21,4 @@ class ReceiptImage(Base):
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
 
-    receipt = relationship("Receipt", back_populates="images")
+    receipt: Mapped["Receipt"] = relationship("Receipt", back_populates="images")
