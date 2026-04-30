@@ -71,7 +71,7 @@ def upgrade() -> None:
         sa.Column("id", sa.Uuid(), nullable=False),
         sa.Column("receipt_id", sa.Uuid(), nullable=False),
         sa.Column("storage_path", sa.String(500), nullable=False),
-        sa.Column("display_order", sa.Integer(), nullable=False),
+        sa.Column("display_order", sa.Integer(), nullable=False, server_default=sa.text("0")),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("NOW()")),
         sa.ForeignKeyConstraint(["receipt_id"], ["receipts.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
