@@ -1,6 +1,17 @@
 import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
+
+
+@pytest.fixture(autouse=True)
+def clear_gemini_cache():
+    """Clear gemini parser cache before each test to prevent cross-test pollution."""
+    try:
+        from services import gemini_parser
+        gemini_parser._cache.clear()
+    except ImportError:
+        pass
+    yield
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from dependencies import get_current_user, get_db
