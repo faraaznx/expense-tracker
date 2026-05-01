@@ -133,3 +133,10 @@ async def test_confirm_rejects_path_not_owned_by_user(client, mock_storage):
     }
     response = await client.post("/api/receipts", json=payload)
     assert response.status_code == 403
+
+
+@pytest.mark.asyncio
+async def test_confirm_requires_auth(unauthenticated_client, mock_storage):
+    """POST /api/receipts returns 401 when no Authorization header is sent."""
+    response = await unauthenticated_client.post("/api/receipts", json=CONFIRM_PAYLOAD)
+    assert response.status_code == 401
