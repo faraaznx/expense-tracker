@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from config import settings
 from dependencies import get_current_user
-from routers import auth
+from routers import auth, stores
 
 app = FastAPI(title="UAE Expense Tracker")
 
@@ -16,6 +16,7 @@ app.add_middleware(
 )
 
 app.include_router(auth.router)
+app.include_router(stores.router)
 
 
 @app.get("/health")
