@@ -85,8 +85,9 @@ async def parse_receipt_images(image_bytes_list: list[bytes]) -> GeminiDraftResp
                 if attempt < max_retries - 1:
                     await asyncio.sleep(2 ** attempt)
                     continue
-            # Non-rate-limit error or exhausted retries on rate limit
-            raise
+            # Non-rate-limit error — wrap as 502
+            logger.exception("Gemini API error: %s", e)
+            raise HTTPException(status_code=502, detail="Receipt parsing service unavailable.")
     else:
         # All retries exhausted on rate limit
         if last_exc and ("429" in str(last_exc) or "exhausted" in str(last_exc).lower()):

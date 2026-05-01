@@ -68,7 +68,10 @@ async def test_malformed_json_raises_422():
 @pytest.mark.asyncio
 async def test_rate_limit_retries_three_times():
     """A 429-like error retries up to 3 times with backoff."""
+    from services import gemini_parser
     from services.gemini_parser import parse_receipt_images
+
+    gemini_parser._cache.clear()
 
     with patch("services.gemini_parser._call_gemini", new_callable=AsyncMock) as mock_call:
         mock_call.side_effect = Exception("429 Resource exhausted")
