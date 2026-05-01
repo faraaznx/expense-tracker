@@ -19,7 +19,6 @@ router = APIRouter(prefix="/api/receipts", tags=["receipts"])
 async def parse_receipt(
     files: list[UploadFile] = File(...),
     user_id: str = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db),
 ):
     """Upload 1–5 receipt images and return parsed draft JSON. Nothing is saved to DB."""
     return await receipt_service.parse_receipt(files, user_id)

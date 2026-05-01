@@ -35,8 +35,9 @@ async def engine():
 async def db_session(engine):
     session_factory = async_sessionmaker(engine, expire_on_commit=False)
     async with session_factory() as session:
-        yield session
-        await session.rollback()
+        async with session.begin():
+            yield session
+            await session.rollback()
 
 
 @pytest_asyncio.fixture

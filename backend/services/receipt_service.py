@@ -119,7 +119,7 @@ async def confirm_receipt(
             receipt_id=receipt.id,
         ))
 
-    await db.flush()
+    await db.flush()  # DB flushed; get_db dependency commits after handler returns
 
     for temp_path, perm_path in path_pairs:
         await supabase_storage.move_file(temp_path, perm_path)
@@ -248,7 +248,7 @@ async def delete_receipt(
 
     storage_paths = [img.storage_path for img in receipt.images]
     await db.delete(receipt)
-    await db.flush()
+    await db.flush()  # DB flushed; get_db dependency commits after handler returns
 
     for path in storage_paths:
         await supabase_storage.delete_file(path)
