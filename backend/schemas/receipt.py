@@ -16,7 +16,7 @@ class GeminiItem(BaseModel):
     @computed_field
     @property
     def total_price_aed(self) -> Decimal:
-        return self.quantity * self.unit_price_aed
+        return (self.quantity * self.unit_price_aed).quantize(Decimal("0.01"))
 
 
 class GeminiRawResponse(BaseModel):
@@ -71,7 +71,7 @@ class LineItemResponse(BaseModel):
     @computed_field
     @property
     def total_price_aed(self) -> Decimal:
-        return self.quantity * self.unit_price_aed
+        return (self.quantity * self.unit_price_aed).quantize(Decimal("0.01"))
 
 
 class ReceiptImageResponse(BaseModel):
