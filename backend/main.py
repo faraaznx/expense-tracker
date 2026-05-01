@@ -1,9 +1,8 @@
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from config import settings
-from dependencies import get_current_user
-from routers import auth, stores
+from routers import auth, receipts, stores
 
 app = FastAPI(title="UAE Expense Tracker")
 
@@ -17,14 +16,9 @@ app.add_middleware(
 
 app.include_router(auth.router)
 app.include_router(stores.router)
+app.include_router(receipts.router)
 
 
 @app.get("/health")
 async def health():
     return {"status": "ok"}
-
-
-# Temporary stub — replaced in Task 8
-@app.get("/api/receipts")
-async def receipts_stub(user_id: str = Depends(get_current_user)):
-    return []
