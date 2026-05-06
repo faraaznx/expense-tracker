@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useCallback } from 'react'
 
 const TOKEN_KEY = 'access_token'
 const AuthContext = createContext(null)
@@ -6,15 +6,15 @@ const AuthContext = createContext(null)
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY))
 
-  function login(accessToken) {
+  const login = useCallback((accessToken) => {
     localStorage.setItem(TOKEN_KEY, accessToken)
     setToken(accessToken)
-  }
+  }, [])
 
-  function logout() {
+  const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY)
     setToken(null)
-  }
+  }, [])
 
   return (
     <AuthContext.Provider value={{ token, login, logout, isAuthenticated: !!token }}>

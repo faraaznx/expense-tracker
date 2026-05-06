@@ -1,4 +1,5 @@
 import { render, screen, act } from '@testing-library/react'
+import { vi } from 'vitest'
 import { AuthProvider, useAuth } from './AuthContext'
 
 function TestConsumer() {
@@ -39,5 +40,14 @@ describe('AuthContext', () => {
     await act(async () => screen.getByText('Logout').click())
     expect(localStorage.getItem('access_token')).toBeNull()
     expect(screen.getByTestId('status').textContent).toBe('no')
+  })
+
+  it('useAuth throws when called outside AuthProvider', () => {
+    // Suppress React's error boundary console output for this test
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    expect(() => {
+      render(<TestConsumer />)
+    }).toThrow('useAuth must be used inside AuthProvider')
+    spy.mockRestore()
   })
 })
