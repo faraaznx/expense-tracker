@@ -44,10 +44,10 @@ describe('LoginPage', () => {
     renderLogin()
 
     fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'a@b.com' } })
-    fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'pass' } })
+    fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'password123' } })
     fireEvent.click(screen.getByRole('button', { name: /log in/i }))
 
-    await waitFor(() => expect(api.login).toHaveBeenCalledWith('a@b.com', 'pass'))
+    await waitFor(() => expect(api.login).toHaveBeenCalledWith('a@b.com', 'password123'))
     await waitFor(() => expect(screen.getByText('receipts page')).toBeInTheDocument())
   })
 
@@ -56,9 +56,29 @@ describe('LoginPage', () => {
     renderLogin()
 
     fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'a@b.com' } })
-    fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'wrong' } })
+    fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'wrongpass' } })
     fireEvent.click(screen.getByRole('button', { name: /log in/i }))
 
     await waitFor(() => expect(screen.getByText('Invalid credentials')).toBeInTheDocument())
+  })
+
+  it('clears form fields when switching modes', async () => {
+    renderLogin()
+    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'a@b.com' } })
+    fireEvent.click(screen.getByText(/sign up/i))
+    expect(screen.getByLabelText(/email/i).value).toBe('')
+  })
+
+  it('calls api.signup when in signup mode', async () => {
+    api.signup.mockResolvedValue({ access_token: 'tok', user_id: 'u1' })
+    renderLogin()
+
+    fireEvent.click(screen.getByText(/sign up/i))
+    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'new@user.com' } })
+    fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'password123' } })
+    fireEvent.click(screen.getByRole('button', { name: /sign up/i }))
+
+    await waitFor(() => expect(api.signup).toHaveBeenCalledWith('new@user.com', 'password123'))
+    await waitFor(() => expect(screen.getByText('receipts page')).toBeInTheDocument())
   })
 })

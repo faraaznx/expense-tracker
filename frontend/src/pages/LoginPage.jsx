@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../api/client'
 import { useAuth } from '../context/AuthContext'
@@ -12,13 +12,21 @@ export default function LoginPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
 
+  useEffect(() => {
+    setEmail('')
+    setPassword('')
+    setError(null)
+  }, [mode])
+
+  const isFormValid = email.trim().length > 0 && password.length >= 6
+
   async function handleSubmit(e) {
     e.preventDefault()
     setError(null)
     setLoading(true)
     try {
       const call = mode === 'login' ? api.login : api.signup
-      const data = await call(email, password)
+      const data = await call(email.trim(), password)
       login(data.access_token)
       navigate('/receipts')
     } catch (err) {
@@ -45,6 +53,7 @@ export default function LoginPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
               className="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-app-green"
             />
           </div>
@@ -59,6 +68,7 @@ export default function LoginPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
               className="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-app-green"
             />
           </div>
@@ -69,10 +79,12 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !isFormValid}
             className="w-full bg-app-green text-white rounded-lg py-2.5 text-sm font-medium disabled:opacity-50"
           >
-            {loading ? 'Please wait…' : mode === 'login' ? 'Log in' : 'Sign up'}
+            {loading
+              ? mode === 'login' ? 'Logging in…' : 'Creating account…'
+              : mode === 'login' ? 'Log in' : 'Sign up'}
           </button>
         </form>
 
