@@ -23,6 +23,11 @@ function renderUpload() {
   )
 }
 
+beforeAll(() => {
+  global.URL.createObjectURL = vi.fn((file) => `blob:mock/${file.name}`)
+  global.URL.revokeObjectURL = vi.fn()
+})
+
 beforeEach(() => { localStorage.clear(); vi.clearAllMocks() })
 
 describe('UploadPage', () => {
@@ -59,5 +64,16 @@ describe('UploadPage', () => {
     fireEvent.click(screen.getByRole('button', { name: /parse/i }))
 
     await waitFor(() => expect(screen.getByText('Parsing failed')).toBeInTheDocument())
+  })
+
+  it('accepts at most 5 files', () => {
+    renderUpload()
+    const files = Array.from({ length: 10 }, (_, i) =>
+      new File(['img'], `receipt${i}.jpg`, { type: 'image/jpeg' })
+    )
+    fireEvent.change(screen.getByTestId('file-input'), { target: { files } })
+    // After selecting 10 files, only 5 images should be previewed
+    const images = screen.getAllByAltText(/^receipt \d+$/)
+    expect(images).toHaveLength(5)
   })
 })

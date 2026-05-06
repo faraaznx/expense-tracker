@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Upload, ImagePlus, X } from 'lucide-react'
 import { api } from '../api/client'
@@ -11,7 +11,14 @@ export default function UploadPage() {
   const inputRef = useRef(null)
   const navigate = useNavigate()
 
+  useEffect(() => {
+    return () => {
+      previews.forEach((url) => URL.revokeObjectURL(url))
+    }
+  }, [previews])
+
   function handleFiles(selected) {
+    previews.forEach((url) => URL.revokeObjectURL(url))
     const arr = Array.from(selected).slice(0, 5)
     setFiles(arr)
     setPreviews(arr.map((f) => URL.createObjectURL(f)))
@@ -19,10 +26,9 @@ export default function UploadPage() {
   }
 
   function removeFile(idx) {
-    const nextFiles = files.filter((_, i) => i !== idx)
-    const nextPreviews = previews.filter((_, i) => i !== idx)
-    setFiles(nextFiles)
-    setPreviews(nextPreviews)
+    URL.revokeObjectURL(previews[idx])
+    setFiles(files.filter((_, i) => i !== idx))
+    setPreviews(previews.filter((_, i) => i !== idx))
   }
 
   async function handleParse() {
@@ -43,7 +49,9 @@ export default function UploadPage() {
       <h1 className="text-xl font-bold text-app-green mb-1">Upload Receipt</h1>
       <p className="text-sm text-stone-500 mb-6">Photo or screenshot — up to 5 images</p>
 
+      <label htmlFor="file-input" className="sr-only">Upload receipt images</label>
       <input
+        id="file-input"
         data-testid="file-input"
         ref={inputRef}
         type="file"
