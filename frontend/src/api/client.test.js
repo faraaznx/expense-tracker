@@ -1,4 +1,4 @@
-import { request, api } from './client'
+import { request, api, TOKEN_KEY } from './client'
 
 const FAKE_TOKEN = 'test-jwt-token'
 
@@ -13,7 +13,7 @@ afterEach(() => {
 
 describe('request()', () => {
   it('attaches Authorization header when token is in localStorage', async () => {
-    localStorage.setItem('access_token', FAKE_TOKEN)
+    localStorage.setItem(TOKEN_KEY, FAKE_TOKEN)
     fetch.mockResolvedValue({
       ok: true,
       status: 200,
@@ -64,7 +64,7 @@ describe('request()', () => {
   })
 
   it('clears localStorage on 401', async () => {
-    localStorage.setItem('access_token', FAKE_TOKEN)
+    localStorage.setItem(TOKEN_KEY, FAKE_TOKEN)
     delete window.location
     window.location = { href: '' }
 
@@ -76,7 +76,7 @@ describe('request()', () => {
 
     await expect(request('/api/test')).rejects.toThrow()
 
-    expect(localStorage.getItem('access_token')).toBeNull()
+    expect(localStorage.getItem(TOKEN_KEY)).toBeNull()
     expect(window.location.href).toBe('/login')
   })
 
