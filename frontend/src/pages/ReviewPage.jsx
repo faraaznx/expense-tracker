@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { CheckCircle } from 'lucide-react'
 import MismatchBanner from '../components/MismatchBanner'
@@ -23,10 +23,11 @@ export default function ReviewPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  if (!draft) {
-    navigate('/upload', { replace: true })
-    return null
-  }
+  useEffect(() => {
+    if (!draft) navigate('/upload', { replace: true })
+  }, [draft, navigate])
+
+  if (!draft) return null
 
   function updateItem(idx, updated) {
     setItems((prev) => prev.map((item, i) => (i === idx ? updated : item)))
@@ -37,7 +38,7 @@ export default function ReviewPage() {
     0
   )
   const mismatchAed =
-    Math.abs(itemSum - Number(draft.total_aed)) > 0.01
+    Math.abs(itemSum - Number(draft.total_aed)) > 0.05
       ? Number(draft.total_aed) - itemSum
       : null
 
@@ -112,7 +113,7 @@ export default function ReviewPage() {
       <div className="space-y-3">
         {items.map((item, i) => (
           <LineItemCard
-            key={i}
+            key={`${item.normalized_name}-${i}`}
             index={i}
             item={item}
             onChange={(updated) => updateItem(i, updated)}
@@ -124,7 +125,18 @@ export default function ReviewPage() {
 
       <button
         onClick={handleConfirm}
-        disabled={loading || !storeName.trim() || !date}
+        disabled={
+          loading ||
+          !storeName.trim() ||
+          !date ||
+          items.length === 0 ||
+          items.some(
+            (item) =>
+              !item.name.trim() ||
+              !Number.isFinite(Number(item.quantity)) ||
+              !Number.isFinite(Number(item.unit_price_aed))
+          )
+        }
         className="w-full bg-app-green text-white rounded-xl py-3 font-medium disabled:opacity-40 flex items-center justify-center gap-2"
       >
         <CheckCircle size={18} />
