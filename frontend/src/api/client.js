@@ -1,7 +1,8 @@
 const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
+const TOKEN_KEY = 'access_token'
 
 function getToken() {
-  return localStorage.getItem('access_token')
+  return localStorage.getItem(TOKEN_KEY)
 }
 
 export async function request(path, options = {}) {
@@ -9,12 +10,17 @@ export async function request(path, options = {}) {
   const headers = { ...options.headers }
   if (token) headers['Authorization'] = `Bearer ${token}`
 
-  const res = await fetch(`${BASE_URL}${path}`, { ...options, headers })
+  let res
+  try {
+    res = await fetch(`${BASE_URL}${path}`, { ...options, headers })
+  } catch {
+    throw new Error('Network error — check your connection and try again.')
+  }
 
   if (res.status === 401) {
-    localStorage.removeItem('access_token')
+    localStorage.removeItem(TOKEN_KEY)
     window.location.href = '/login'
-    return
+    throw new Error('Session expired — please log in again.')
   }
 
   if (res.status === 204) return null
@@ -24,7 +30,9 @@ export async function request(path, options = {}) {
     throw new Error(err.detail ?? `Request failed: ${res.status}`)
   }
 
-  return res.json()
+  return res.json().catch(() => {
+    throw new Error(`Server returned non-JSON response (status ${res.status})`)
+  })
 }
 
 export const api = {
@@ -42,8 +50,10 @@ export const api = {
       body: JSON.stringify({ email, password }),
     }),
 
-  logout: () =>
-    request('/api/auth/logout', { method: 'POST' }),
+  logout: () => {
+    localStorage.removeItem(TOKEN_KEY)
+    return request('/api/auth/logout', { method: 'POST' }).catch(() => {})
+  },
 
   parseReceipt: (files) => {
     const formData = new FormData()
@@ -58,12 +68,14 @@ export const api = {
       body: JSON.stringify(body),
     }),
 
-  listReceipts: (page = 1) =>
-    request(`/api/receipts?page=${page}`),
+  listReceipts: (page = 1) => {
+    const params = new URLSearchParams({ page })
+    return request(`/api/receipts?${params}`)
+  },
 
   getReceipt: (id) =>
-    request(`/api/receipts/${id}`),
+    request(`/api/receipts/${encodeURIComponent(id)}`),
 
   deleteReceipt: (id) =>
-    request(`/api/receipts/${id}`, { method: 'DELETE' }),
+    request(`/api/receipts/${encodeURIComponent(id)}`, { method: 'DELETE' }),
 }

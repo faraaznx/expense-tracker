@@ -16,5 +16,7 @@ export const CATEGORIES = [
 ]
 
 export function formatAed(amount) {
-  return `AED ${Number(amount).toFixed(2)}`
+  const n = Number(amount)
+  if (!Number.isFinite(n)) return 'AED —'
+  return `AED ${n.toFixed(2)}`
 }

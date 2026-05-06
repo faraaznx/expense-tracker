@@ -74,9 +74,14 @@ describe('request()', () => {
       json: async () => ({ detail: 'Unauthorized' }),
     })
 
-    await request('/api/test')
+    await expect(request('/api/test')).rejects.toThrow()
 
     expect(localStorage.getItem('access_token')).toBeNull()
     expect(window.location.href).toBe('/login')
+  })
+
+  it('throws a clean error message on network failure', async () => {
+    fetch.mockRejectedValue(new TypeError('Failed to fetch'))
+    await expect(request('/api/test')).rejects.toThrow('Network error')
   })
 })
