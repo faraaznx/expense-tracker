@@ -25,13 +25,13 @@ describe('LineItemCard', () => {
     const onChange = vi.fn()
     render(<LineItemCard item={item} onChange={onChange} />)
     fireEvent.change(screen.getByDisplayValue('2'), { target: { value: '3' } })
-    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ quantity: '3' }))
+    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ quantity: 3 }))
   })
 
   it('calls onChange with updated item when unit price changes', () => {
     const onChange = vi.fn()
     render(<LineItemCard item={item} onChange={onChange} />)
     fireEvent.change(screen.getByDisplayValue('6.25'), { target: { value: '7.00' } })
-    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ unit_price_aed: '7.00' }))
+    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ unit_price_aed: 7 }))
   })
 })

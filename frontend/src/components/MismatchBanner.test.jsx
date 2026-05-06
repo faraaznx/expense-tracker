@@ -16,4 +16,14 @@ describe('MismatchBanner', () => {
     render(<MismatchBanner mismatchAed={5} totalAed={143.5} />)
     expect(screen.getByText(/AED 143.50/)).toBeInTheDocument()
   })
+
+  it('renders nothing when mismatchAed is 0', () => {
+    const { container } = render(<MismatchBanner mismatchAed={0} totalAed={100} />)
+    expect(container).toBeEmptyDOMElement()
+  })
+
+  it('renders nothing when mismatchAed is undefined', () => {
+    const { container } = render(<MismatchBanner mismatchAed={undefined} totalAed={100} />)
+    expect(container).toBeEmptyDOMElement()
+  })
 })

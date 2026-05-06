@@ -1,10 +1,12 @@
 import { formatAed, CATEGORIES } from '../constants'
 
-export default function LineItemCard({ item, onChange }) {
+export default function LineItemCard({ item, onChange, index = 0 }) {
   const total = (Number(item.quantity) * Number(item.unit_price_aed)).toFixed(2)
 
   function update(field, value) {
-    onChange({ ...item, [field]: value })
+    const numericFields = ['quantity', 'unit_price_aed']
+    const parsed = numericFields.includes(field) ? (value === '' ? 0 : parseFloat(value)) : value
+    onChange({ ...item, [field]: parsed })
   }
 
   return (
@@ -20,8 +22,9 @@ export default function LineItemCard({ item, onChange }) {
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-xs text-stone-400 font-medium uppercase tracking-wide">Qty</label>
+          <label htmlFor={`qty-${index}`} className="text-xs text-stone-400 font-medium uppercase tracking-wide">Qty</label>
           <input
+            id={`qty-${index}`}
             type="number"
             min="0.001"
             step="any"
@@ -31,8 +34,9 @@ export default function LineItemCard({ item, onChange }) {
           />
         </div>
         <div>
-          <label className="text-xs text-stone-400 font-medium uppercase tracking-wide">Unit price (AED)</label>
+          <label htmlFor={`price-${index}`} className="text-xs text-stone-400 font-medium uppercase tracking-wide">Unit price (AED)</label>
           <input
+            id={`price-${index}`}
             type="number"
             min="0"
             step="0.01"

@@ -2,7 +2,7 @@ import { AlertTriangle } from 'lucide-react'
 import { formatAed } from '../constants'
 
 export default function MismatchBanner({ mismatchAed, totalAed }) {
-  if (!mismatchAed) return null
+  if (mismatchAed == null || mismatchAed === 0) return null
 
   const itemSum = Number(totalAed) - Number(mismatchAed)
 
