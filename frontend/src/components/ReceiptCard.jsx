@@ -8,6 +8,7 @@ export default function ReceiptCard({ receipt }) {
   return (
     <Link
       to={`/receipts/${receipt.id}`}
+      aria-label={`${receipt.store_name}, ${receipt.date}, ${formatAed(receipt.total_aed)}`}
       className="block bg-white rounded-xl shadow-sm p-4 active:scale-[0.99] transition-transform"
     >
       <div className="flex items-start justify-between gap-2">
@@ -21,7 +22,7 @@ export default function ReceiptCard({ receipt }) {
         </div>
       </div>
       <div className="flex items-center gap-1 mt-2">
-        <Icon size={12} className="text-stone-300" />
+        <Icon size={12} className="text-stone-300" aria-hidden="true" />
         <span className="text-xs text-stone-300">
           {receipt.source === 'physical_photo' ? 'Physical receipt' : 'Online order'}
         </span>

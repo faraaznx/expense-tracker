@@ -12,7 +12,10 @@ export default function ReceiptListPage() {
 
   useEffect(() => {
     api.listReceipts(1)
-      .then(setReceipts)
+      .then((data) => {
+        if (!Array.isArray(data)) throw new Error('Unexpected response from server')
+        setReceipts(data)
+      })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
   }, [])
