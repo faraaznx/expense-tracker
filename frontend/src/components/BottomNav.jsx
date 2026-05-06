@@ -7,7 +7,7 @@ export default function BottomNav() {
   const inactive = 'text-stone-400'
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 bg-white border-t border-stone-100 flex justify-around">
+    <nav className="fixed bottom-0 inset-x-0 h-16 bg-white border-t border-stone-100 flex justify-around items-center">
       <NavLink to="/receipts" className={({ isActive }) => `${base} ${isActive ? active : inactive}`}>
         <Receipt size={22} />
         Receipts
