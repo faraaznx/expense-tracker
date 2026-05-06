@@ -1,4 +1,5 @@
 import asyncio
+import logging
 
 from fastapi import APIRouter, Depends, HTTPException
 from supabase import create_client
@@ -6,6 +7,8 @@ from supabase import create_client
 from config import settings
 from dependencies import get_current_user
 from schemas.auth import AuthResponse, LoginRequest, SignUpRequest
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -34,7 +37,8 @@ async def signup(request: SignUpRequest):
         )
     except HTTPException:
         raise
-    except Exception:
+    except Exception as e:
+        logger.error("Supabase signup error: %s", e)
         raise HTTPException(status_code=400, detail="Signup failed. Email may already be in use.")
 
 

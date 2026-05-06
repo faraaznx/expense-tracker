@@ -67,7 +67,7 @@ async def parse_receipt_images(image_bytes_list: list[bytes]) -> GeminiDraftResp
         return _cache[cache_key]
 
     genai.configure(api_key=settings.gemini_api_key)
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    model = genai.GenerativeModel("gemini-2.5-flash")
 
     parts: list = [SYSTEM_PROMPT]
     for img_bytes in image_bytes_list:

@@ -14,9 +14,14 @@ _supabase_client = create_client(settings.supabase_url, settings.supabase_anon_k
 
 
 async def get_db():
-    """Provide an async database session."""
+    """Provide an async database session, committing on success."""
     async with AsyncSessionLocal() as session:
-        yield session
+        try:
+            yield session
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            raise
 
 
 async def get_current_user(
