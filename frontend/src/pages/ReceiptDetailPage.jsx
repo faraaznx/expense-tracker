@@ -13,10 +13,18 @@ export default function ReceiptDetailPage() {
   const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
+    const controller = new AbortController()
     api.getReceipt(id)
-      .then(setReceipt)
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false))
+      .then((data) => {
+        if (!controller.signal.aborted) setReceipt(data)
+      })
+      .catch((err) => {
+        if (!controller.signal.aborted) setError(err.message)
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false)
+      })
+    return () => controller.abort()
   }, [id])
 
   async function handleDelete() {
@@ -90,11 +98,12 @@ export default function ReceiptDetailPage() {
           className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4"
           aria-label="Receipt images"
         >
-          {receipt.images.map((img, i) => (
+          {receipt.images.map((img) => (
             <img
-              key={i}
+              key={img.display_order}
               src={img.signed_url}
-              alt={`Receipt image ${i + 1}`}
+              alt={`Receipt image ${img.display_order + 1}`}
+              onError={(e) => { e.currentTarget.style.display = 'none' }}
               className="h-48 w-auto rounded-xl flex-shrink-0 object-cover shadow-sm"
             />
           ))}
