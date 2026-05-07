@@ -55,7 +55,7 @@ async def login(request: LoginRequest):
             user_id=str(response.user.id),
         )
     except Exception:
-        raise HTTPException(status_code=401, detail="Invalid email or password")
+        raise HTTPException(status_code=400, detail="Invalid email or password")
 
 
 @router.post("/logout", status_code=204)
