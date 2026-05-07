@@ -25,7 +25,7 @@ Return ONLY valid JSON — no preamble, no markdown fences.
   "source": "physical_photo | online_screenshot",
   "items": [
     {
-      "name": "string — raw receipt text, preserve Arabic and brand name",
+      "name": "string — English name only (ignore Arabic text on the same item line)",
       "normalized_name": "string — generic product type, strip brand",
       "quantity": number,
       "unit_price_aed": number,
@@ -40,7 +40,8 @@ Rules:
 - source: physical_photo if a paper receipt, online_screenshot if order UI
 - quantity defaults to 1 if not shown
 - unit_price_aed: price per single unit
-- Delivery Fee and VAT: capture as separate line items if visible"""
+- Delivery Fee and VAT: capture as separate line items if visible
+- BILINGUAL ITEMS: UAE receipts (e.g. Carrefour) print each item in both English and Arabic on adjacent lines. Treat them as ONE item — do not create separate entries for the Arabic and English versions of the same product. Use the English name for the "name" field."""
 
 
 async def _call_gemini(model, parts: list):
